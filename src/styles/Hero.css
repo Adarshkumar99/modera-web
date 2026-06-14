@@ -1,0 +1,118 @@
+/* ── Hero ── */
+.sl-hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 120px 80px 80px;
+  overflow: hidden;
+}
+
+.sl-hero-inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 60px;
+}
+
+.sl-hero-left { display: flex; flex-direction: column; align-items: flex-start; }
+
+.sl-hero-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  animation: sl-fadeUp 1s ease forwards 0.6s;
+}
+
+.sl-orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: .15; animation: sl-float 8s ease-in-out infinite; }
+.sl-orb1 { width: 500px; height: 500px; background: var(--sl-accent); top: -100px; left: -100px; animation-delay: 0s; }
+.sl-orb2 { width: 400px; height: 400px; background: var(--sl-accent2); bottom: -50px; right: -50px; animation-delay: 3s; }
+.sl-orb3 { width: 300px; height: 300px; background: var(--sl-accent3); top: 50%; left: 50%; transform: translate(-50%,-50%); animation-delay: 1.5s; }
+@keyframes sl-float { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-30px) scale(1.05)} }
+@keyframes sl-float3 { 0%,100%{transform:translate(-50%,-50%) scale(1)} 50%{transform:translate(-50%,-53%) scale(1.05)} }
+.sl-orb3 { animation-name: sl-float3; }
+
+.sl-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(79,142,247,.1);
+  border: 1px solid rgba(79,142,247,.2);
+  border-radius: 100px;
+  padding: 6px 16px;
+  font-size: 12px;
+  color: var(--sl-accent);
+  margin-bottom: 32px;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: sl-fadeUp .6s ease forwards .2s;
+}
+.sl-badge-dot { width: 6px; height: 6px; background: var(--sl-accent3); border-radius: 50%; animation: sl-pulse 2s ease infinite; }
+@keyframes sl-pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.3)} }
+
+.sl-h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(38px, 5vw, 72px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -2px;
+  margin-bottom: 24px;
+  opacity: 0;
+  animation: sl-fadeUp .7s ease forwards .4s;
+  text-align: left;
+}
+.sl-h1-grad {
+  background: linear-gradient(135deg,#4F8EF7 0%,#7C3AED 50%,#06D6A0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% 200%;
+  animation: sl-gradShift 4s ease infinite 1.1s;
+}
+@keyframes sl-gradShift { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+
+.sl-hero-sub {
+  font-size: 17px;
+  color: var(--sl-text2);
+  line-height: 1.7;
+  max-width: 480px;
+  margin: 0 0 40px 0;
+  font-weight: 300;
+  opacity: 0;
+  animation: sl-fadeUp .7s ease forwards .6s;
+  text-align: left;
+}
+
+.sl-hero-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: sl-fadeUp .7s ease forwards .8s;
+}
+
+@keyframes sl-fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+
+.sl-tag { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 6px; white-space: nowrap; }
+.sl-tag-safe  { background: rgba(6,214,160,.1);  color: var(--sl-safe);  border: 1px solid rgba(6,214,160,.2); }
+.sl-tag-toxic { background: rgba(247,37,133,.1); color: var(--sl-toxic); border: 1px solid rgba(247,37,133,.2); }
+.sl-tag-spam  { background: rgba(255,183,3,.1);  color: var(--sl-spam);  border: 1px solid rgba(255,183,3,.2); }
+.sl-tag-hate  { background: rgba(230,57,70,.1);  color: var(--sl-hate);  border: 1px solid rgba(230,57,70,.2); }
+
+@media (max-width: 900px) {
+  .sl-hero { padding: 100px 24px 60px; }
+  .sl-hero-inner { grid-template-columns: 1fr; text-align: center; gap: 40px; }
+  .sl-hero-left { align-items: center; }
+  .sl-h1 { text-align: center; font-size: clamp(36px, 8vw, 56px); }
+  .sl-hero-sub { text-align: center; margin: 0 auto 40px; }
+  .sl-hero-actions { justify-content: center; }
+  .sl-hero-right { max-width: 360px; margin: 0 auto; }
+}
