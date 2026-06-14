@@ -1,0 +1,12 @@
+/* ── Platforms ── */
+.sl-platforms { padding: 80px 60px; background: var(--sl-bg2); border-top: 1px solid var(--sl-border); border-bottom: 1px solid var(--sl-border); position: relative; z-index: 2; }
+.sl-platform-card { background: var(--sl-bg3); border: 1px solid var(--sl-border); border-radius: 16px; padding: 28px 36px; display: flex; flex-direction: column; align-items: center; gap: 12px; transition: all .3s; min-width: 160px; }
+.sl-platform-card:hover { border-color: var(--sl-accent); transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,.3); }
+.sl-platform-icon { font-size: 32px; }
+.sl-platform-name { font-size: 14px; font-weight: 500; color: var(--sl-text2); }
+.sl-platform-status { font-size: 11px; padding: 2px 8px; border-radius: 4px; background: rgba(6,214,160,.1); color: var(--sl-safe); }
+.sl-platform-soon { background: rgba(255,183,3,.1); color: var(--sl-spam); }
+
+@media (max-width: 768px) {
+  .sl-platforms { padding: 60px 20px; }
+}

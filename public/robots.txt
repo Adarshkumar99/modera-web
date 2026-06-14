@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Block dashboard and auth pages from indexing — no value for SEO
+Disallow: /dashboard
+Disallow: /login
+Disallow: /signup
+Disallow: /forgot-password
+
+# Sitemap location
+Sitemap: https://moderaai.com/sitemap.xml

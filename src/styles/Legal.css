@@ -1,0 +1,209 @@
+/* Legal.css — shared styles for PrivacyPolicy, TermsOfService, RefundPolicy, NotFound */
+
+/* ── Page wrapper ── */
+.legal-page {
+  min-height: 100vh;
+  background: var(--sl-bg, #0a0a0f);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--sl-text1, #f1f5f9);
+}
+
+/* ── Main content area ── */
+.legal-main {
+  padding: 48px 16px 80px;
+}
+
+/* ── Content card ── */
+.legal-container {
+  max-width: 800px;
+  margin: 0 auto;
+  background: var(--sl-card, rgba(255,255,255,0.03));
+  border: 1px solid var(--sl-border, rgba(255,255,255,0.08));
+  border-radius: 16px;
+  padding: 48px;
+}
+
+/* ── Headings ── */
+.legal-h1 {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--sl-text1, #f1f5f9);
+  margin: 0 0 8px;
+}
+
+.legal-meta {
+  font-size: 13px;
+  color: var(--sl-text3, #64748b);
+  margin: 0 0 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--sl-border, rgba(255,255,255,0.08));
+}
+
+/* ── Intro highlight box ── */
+.legal-intro {
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--sl-text2, #94a3b8);
+  margin-bottom: 40px;
+  padding: 16px 20px;
+  background: rgba(99, 102, 241, 0.08);
+  border-radius: 10px;
+  border-left: 3px solid #6366f1;
+}
+
+/* ── Sections ── */
+.legal-section {
+  margin-bottom: 36px;
+}
+
+.legal-h2 {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--sl-text1, #f1f5f9);
+  margin: 0 0 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--sl-border, rgba(255,255,255,0.06));
+}
+
+.legal-sub {
+  margin-bottom: 16px;
+}
+
+.legal-h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--sl-text2, #94a3b8);
+  margin: 0 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ── Body text ── */
+.legal-container p {
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--sl-text2, #94a3b8);
+  margin: 0 0 12px;
+}
+
+/* ── Lists ── */
+.legal-container ul {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--sl-text2, #94a3b8);
+  padding-left: 20px;
+  margin: 0 0 12px;
+}
+
+.legal-container li {
+  margin-bottom: 6px;
+}
+
+/* ── Links ── */
+.legal-container a {
+  color: #818cf8;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.legal-container a:hover {
+  color: #a5b4fc;
+  text-decoration: underline;
+}
+
+/* ── Contact box ── */
+.legal-contact-box {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--sl-border, rgba(255,255,255,0.08));
+  border-radius: 10px;
+  padding: 16px 20px;
+  font-size: 15px;
+  color: var(--sl-text2, #94a3b8);
+  line-height: 1.8;
+}
+
+.legal-contact-box p {
+  margin: 0 !important;
+}
+
+/* ── 404 Page ── */
+.notfound-container {
+  text-align: center;
+  padding: 80px 24px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.notfound-code {
+  font-size: 120px;
+  font-weight: 800;
+  line-height: 1;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 16px;
+}
+
+.notfound-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--sl-text1, #f1f5f9);
+  margin: 0 0 12px;
+}
+
+.notfound-desc {
+  font-size: 16px;
+  color: var(--sl-text3, #64748b);
+  line-height: 1.6;
+  margin: 0 0 36px;
+}
+
+.notfound-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.notfound-btn-primary {
+  padding: 12px 28px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #fff;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.notfound-btn-primary:hover { opacity: 0.85; }
+
+.notfound-btn-secondary {
+  padding: 12px 28px;
+  background: transparent;
+  color: var(--sl-text2, #94a3b8);
+  border: 1px solid var(--sl-border, rgba(255,255,255,0.12));
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.notfound-btn-secondary:hover {
+  border-color: #6366f1;
+  color: #f1f5f9;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .legal-container {
+    padding: 28px 20px;
+  }
+  .legal-h1 {
+    font-size: 24px;
+  }
+  .notfound-code {
+    font-size: 80px;
+  }
+}

@@ -1,0 +1,368 @@
+/* ─────────────────────────────────────────────
+   Auth.css — Login & Signup pages
+   Uses same CSS variables as global.css
+   Fonts: Syne (headings) + DM Sans (body)
+───────────────────────────────────────────── */
+
+/* ── Page wrapper ── */
+.sl-auth-page {
+  min-height: 100vh;
+  background: var(--sl-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 100px 20px 40px; /* 100px top — Navbar height + breathing room */
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Card ── */
+.sl-auth-card {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 420px;
+  background: var(--sl-bg2);
+  border: 1px solid var(--sl-border);
+  border-radius: 24px;
+  padding: 40px;
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.4);
+  animation: sl-fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.sl-auth-card-wide {
+  max-width: 460px;
+}
+
+/* ── Logo ── */
+.sl-auth-logo {
+  display: block;
+  margin-bottom: 28px;
+  font-size: 24px;
+  text-decoration: none;
+}
+
+/* ── Headings ── */
+.sl-auth-heading {
+  font-family: 'Syne', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--sl-text);
+  margin-bottom: 8px;
+}
+
+.sl-auth-sub {
+  font-size: 14px;
+  color: var(--sl-text2);
+  line-height: 1.6;
+  margin-bottom: 28px;
+  font-weight: 300;
+}
+
+/* ── Error banner ── */
+.sl-auth-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(247, 37, 133, 0.08);
+  border: 1px solid rgba(247, 37, 133, 0.2);
+  color: var(--sl-toxic);
+  font-size: 13px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+/* ── Form ── */
+.sl-auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Field ── */
+.sl-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sl-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--sl-text2);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.sl-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sl-forgot {
+  font-size: 12px;
+  color: var(--sl-accent);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.sl-forgot:hover {
+  color: var(--sl-text);
+}
+
+/* ── Input wrapper ── */
+.sl-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.sl-input-icon {
+  position: absolute;
+  left: 14px;
+  color: var(--sl-text3);
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+.sl-input {
+  width: 100%;
+  background: var(--sl-bg3);
+  border: 1px solid var(--sl-border);
+  border-radius: 10px;
+  padding: 12px 14px 12px 42px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: var(--sl-text);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+
+.sl-input::placeholder {
+  color: var(--sl-text3);
+}
+
+.sl-input:focus {
+  border-color: var(--sl-accent);
+  box-shadow: 0 0 0 3px rgba(79, 142, 247, 0.12);
+}
+
+.sl-input-err {
+  border-color: var(--sl-toxic) !important;
+  box-shadow: 0 0 0 3px rgba(247, 37, 133, 0.1) !important;
+}
+
+.sl-eye-btn {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  color: var(--sl-text3);
+  padding: 4px;
+  cursor: pointer;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+}
+.sl-eye-btn:hover {
+  color: var(--sl-text);
+}
+
+/* ── Field error ── */
+.sl-field-error {
+  font-size: 12px;
+  color: var(--sl-toxic);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ── Password strength ── */
+.sl-strength-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.sl-strength-bar::before {
+  content: '';
+  flex: 1;
+  height: 3px;
+  background: var(--sl-border);
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+}
+
+.sl-strength-fill {
+  height: 3px;
+  border-radius: 2px;
+  transition: width 0.4s ease;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+/* override — use a wrapper instead */
+.sl-strength-bar {
+  position: relative;
+}
+
+.sl-strength-track {
+  flex: 1;
+  height: 3px;
+  background: var(--sl-border);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+
+.sl-strength-fill {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+.sl-strength-weak   { background: var(--sl-toxic);  color: var(--sl-toxic);  }
+.sl-strength-fair   { background: var(--sl-spam);   color: var(--sl-spam);   }
+.sl-strength-strong { background: var(--sl-safe);   color: var(--sl-safe);   }
+
+.sl-strength-label {
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* ── Submit button ── */
+.sl-auth-btn {
+  width: 100%;
+  justify-content: center;
+  padding: 14px;
+  font-size: 15px;
+  margin-top: 4px;
+  border: none;
+  cursor: pointer;
+}
+
+.sl-auth-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* ── Spinner ── */
+.sl-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: sl-spin 0.7s linear infinite;
+  display: inline-block;
+}
+
+@keyframes sl-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Divider ── */
+.sl-auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  color: var(--sl-text3);
+  font-size: 12px;
+}
+
+.sl-auth-divider::before,
+.sl-auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--sl-border);
+}
+
+/* ── Social button ── */
+.sl-social-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--sl-bg3);
+  border: 1px solid var(--sl-border);
+  border-radius: 10px;
+  padding: 12px;
+  color: var(--sl-text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sl-social-btn:hover {
+  border-color: var(--sl-accent);
+  background: rgba(79, 142, 247, 0.04);
+  transform: translateY(-1px);
+}
+
+/* ── Switch ── */
+.sl-auth-switch {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 13px;
+  color: var(--sl-text2);
+}
+
+.sl-auth-link {
+  background: none;
+  border: none;
+  color: var(--sl-accent);
+  font-family: 'DM Sans', sans-serif;
+  font-size: inherit;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.sl-auth-link:hover {
+  color: var(--sl-text);
+  text-decoration: underline;
+}
+
+/* ── Terms ── */
+.sl-auth-terms {
+  font-size: 12px;
+  color: var(--sl-text3);
+  text-align: center;
+  line-height: 1.6;
+  margin-top: -4px;
+}
+
+/* ── Forgot Password success state ── */
+.sl-forgot-success {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.sl-forgot-icon {
+  font-size: 48px;
+  margin-bottom: 8px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .sl-auth-card {
+    padding: 28px 20px;
+    border-radius: 16px;
+  }
+}

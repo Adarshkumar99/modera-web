@@ -1,0 +1,11 @@
+/* ── How It Works ── */
+.sl-how { padding: 100px 60px; position: relative; z-index: 2; }
+.sl-steps-line { position: absolute; top: 28px; left: 10%; right: 10%; height: 1px; background: linear-gradient(90deg,transparent,var(--sl-border),var(--sl-border),transparent); }
+.sl-step-num { width: 56px; height: 56px; border-radius: 50%; border: 1px solid var(--sl-border); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: var(--sl-accent); background: var(--sl-bg); transition: all .3s; }
+.sl-step:hover .sl-step-num { background: var(--sl-accent); color: #fff; border-color: var(--sl-accent); transform: scale(1.1); }
+.sl-step-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 600; margin-bottom: 10px; }
+.sl-step-desc { font-size: 13px; color: var(--sl-text2); line-height: 1.6; font-weight: 300; }
+
+@media (max-width: 768px) {
+  .sl-how { padding: 60px 20px; }
+}
