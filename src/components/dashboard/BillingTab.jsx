@@ -22,7 +22,7 @@ const PLANS = [
     name:     "Free",
     price:    "₹0",
     period:   "Forever",
-    features: ["50 comments/month", "1 platform", "Manual review"],
+    features: ["50 comments/month", "1 platform (YouTube only)", "Manual analysis", "Basic AI classification"],
   },
   {
     key:      "starter",
@@ -30,21 +30,21 @@ const PLANS = [
     price:    "₹299",
     period:   "/month",
     popular:  true,
-    features: ["500 comments/month", "3 platforms", "Auto-hide toxic", "Analytics"],
+    features: ["1,500 comments/month", "2 platforms (YouTube + Instagram)", "Auto-delete toxic comments", "Analysis history & CSV export"],
   },
   {
     key:      "pro",
     name:     "Pro",
     price:    "₹799",
     period:   "/month",
-    features: ["Unlimited comments", "All platforms", "Auto-delete", "Priority support"],
+    features: ["5,000 comments/month", "All platforms (YT + IG + Telegram)", "Priority AI (better accuracy)", "Real-time Telegram alerts"],
   },
   {
     key:      "agency",
     name:     "Agency",
-    price:    "₹2499",
+    price:    "₹2,499",
     period:   "/month",
-    features: ["10 client accounts", "White-label", "Custom rules", "Dedicated support"],
+    features: ["Unlimited comments", "Multiple connected accounts", "Priority support", "All Pro features included"],
   },
 ];
 
@@ -145,8 +145,8 @@ export default function BillingTab() {
   return (
     <div className="sl-dash-content">
       <div className="sl-dash-header">
-        <h1 className="sl-dash-title">Billing & Plans</h1>
-        <p className="sl-dash-sub">Apna plan manage karo.</p>
+        <h1 className="sl-dash-title">Billing &amp; Plans</h1>
+        <p className="sl-dash-sub">Manage your subscription and upgrade your plan.</p>
       </div>
 
       {/* Current Plan Card */}

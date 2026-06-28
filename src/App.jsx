@@ -40,16 +40,17 @@ function App() {
   const { cursorRef, ringRef } = useCursor();
   const location = useLocation();
 
-  // Hide navbar only on dashboard — it has its own sidebar with logo
-  // Login, Signup, Legal pages — all show navbar
-  const hideFooter = ["/dashboard", "/login", "/signup"].includes(location.pathname);
-  const hideNavbar = ["/dashboard"].includes(location.pathname);
+  const isDashboard = location.pathname === "/dashboard";
+  const hideFooter  = ["/dashboard", "/login", "/signup"].includes(location.pathname);
+  const hideNavbar  = isDashboard;
 
   return (
     <div className="sl-page">
       <div className="sl-cursor"      ref={cursorRef} />
       <div className="sl-cursor-ring" ref={ringRef}   />
-      <div className="sl-noise" />
+
+      {/* Noise overlay — hide on dashboard so it doesn't cover content */}
+      {!isDashboard && <div className="sl-noise" />}
 
       {!hideNavbar && <Navbar scrolled={scrolled} />}
 
@@ -62,9 +63,9 @@ function App() {
             <Dashboard />
           </ProtectedRoute>
         } />
-        <Route path="/privacy"          element={<PrivacyPolicy />} />
-        <Route path="/terms"            element={<TermsOfService />} />
-        <Route path="/refund"           element={<RefundPolicy />} />
+        <Route path="/privacy"         element={<PrivacyPolicy />} />
+        <Route path="/terms"           element={<TermsOfService />} />
+        <Route path="/refund"          element={<RefundPolicy />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="*"                element={<NotFound />} />
       </Routes>

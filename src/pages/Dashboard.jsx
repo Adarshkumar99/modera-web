@@ -34,35 +34,99 @@ function UsageBar({ used, total }) {
   );
 }
 
-// Valid tabs list
+// Top header bar inside dashboard — shows on every tab, sits above sl-dash-main content
+function DashboardHeader({ user, activeTab }) {
+  const [open, setOpen] = useState(false);
+
+  const TAB_TITLES = {
+    manual: "Manual Analysis", youtube: "YouTube", instagram: "Instagram",
+    history: "History", telegram: "Connect Telegram", billing: "Billing", flagged: "Flagged Words"
+  };
+
+  const initials = user?.name?.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2) || "?";
+
+  return (
+    <header className="sl-dash-topbar">
+      <div className="sl-dash-topbar-left">
+        <a href="/" className="sl-dash-topbar-home" title="Back to homepage">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1h3a1 1 0 001-1V10" /></svg>
+        </a>
+        <span className="sl-dash-topbar-sep">/</span>
+        <span className="sl-dash-topbar-crumb">{TAB_TITLES[activeTab] || "Dashboard"}</span>
+      </div>
+
+      <div className="sl-dash-topbar-right">
+        <span className="sl-dash-topbar-plan">{user?.plan || "Free"} Plan</span>
+        <div className="sl-dash-topbar-avatar-wrap">
+          <button className="sl-dash-topbar-avatar" onClick={() => setOpen(o => !o)} aria-label="User menu">
+            {initials}
+          </button>
+          {open && (
+            <div className="sl-dash-topbar-dd" onMouseLeave={() => setOpen(false)}>
+              <div className="sl-dash-topbar-dd-name">{user?.name}</div>
+              <div className="sl-dash-topbar-dd-email">{user?.email}</div>
+            </div>
+          )}
+        </div>
+      </div>
+    </header>
+  );
+}
+
+// Inline styles guaranteed — bypasses any CSS class conflicts
+function TabHeader({ title, sub }) {
+  return (
+    <div style={{
+      marginBottom: "28px",
+      paddingBottom: "20px",
+      borderBottom: "1px solid #1E2740"
+    }}>
+      <h1 style={{
+        fontFamily: "'Syne', sans-serif",
+        fontSize: "28px",
+        fontWeight: 700,
+        color: "#F0F4FF",
+        margin: "0 0 6px",
+        letterSpacing: "-0.5px",
+        lineHeight: 1.2
+      }}>
+        {title}
+      </h1>
+      <p style={{
+        fontSize: "14px",
+        color: "#8892B0",
+        margin: 0,
+        fontWeight: 300
+      }}>
+        {sub}
+      </p>
+    </div>
+  );
+}
+
 const VALID_TABS = ["manual", "youtube", "instagram", "history", "telegram", "billing", "flagged"];
 
 export default function Dashboard() {
   const { user, logout, refreshUser } = useAuth();
   const navigate = useNavigate();
 
-  // ── Refresh pe bhi tab yaad rahe ──
   const [activeTab, setActiveTab] = useState(() => {
     const saved = localStorage.getItem("sl_active_tab");
     return VALID_TABS.includes(saved) ? saved : "manual";
   });
 
-  // Tab switch karo aur localStorage mein save karo
   const switchTab = (tab) => {
     localStorage.setItem("sl_active_tab", tab);
     setActiveTab(tab);
   };
 
-  // Manual analysis state
   const [comments, setComments]   = useState("");
   const [results, setResults]     = useState([]);
   const [analyzing, setAnalyzing] = useState(false);
 
-  // History state
   const [history, setHistory]               = useState([]);
   const [loadingHistory, setLoadingHistory] = useState(false);
 
-  // YouTube state
   const [youtubeJustConnected, setYoutubeJustConnected] = useState(false);
   const ytConnected = !!user?.youtube_channel_id;
   const [videos, setVideos]                             = useState([]);
@@ -77,7 +141,6 @@ export default function Dashboard() {
   const [analyzingYt, setAnalyzingYt]                   = useState(false);
   const [disconnectingYt, setDisconnectingYt]           = useState(false);
 
-  // Instagram state
   const [igJustConnected, setIgJustConnected]           = useState(false);
   const [igPosts, setIgPosts]                           = useState([]);
   const [igNextCursor, setIgNextCursor]                 = useState(null);
@@ -92,11 +155,9 @@ export default function Dashboard() {
   const [igActuallyConnected, setIgActuallyConnected]   = useState(false);
   const [disconnectingIg, setDisconnectingIg]           = useState(false);
 
-  // Naya pricing — Free: 50, Starter: 1500, Pro: 5000, Agency: unlimited
   const planLimits = { free: 50, starter: 1500, pro: 5000, agency: Infinity };
   const limit = planLimits[user?.plan] || 50;
 
-  // On mount
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) { navigate("/login"); return; }
@@ -104,7 +165,6 @@ export default function Dashboard() {
     checkInstagramConnected();
   }, []);
 
-  // YouTube / Instagram OAuth callback detection
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("youtube") === "connected") {
@@ -144,18 +204,13 @@ export default function Dashboard() {
   }, [igJustConnected, igActuallyConnected]);
 
   useEffect(() => {
-    if (activeTab === "youtube" && ytConnected && videos.length === 0) {
-      fetchYouTubeVideos();
-    }
+    if (activeTab === "youtube" && ytConnected && videos.length === 0) fetchYouTubeVideos();
   }, [activeTab, ytConnected]);
 
   useEffect(() => {
-    if (activeTab === "instagram" && igActuallyConnected && igPosts.length === 0) {
-      fetchInstagramPosts();
-    }
+    if (activeTab === "instagram" && igActuallyConnected && igPosts.length === 0) fetchInstagramPosts();
   }, [activeTab, igActuallyConnected]);
 
-  // YouTube auto-polling
   useEffect(() => {
     if (!selectedVideo || !ytConnected) return;
     const currentVideo = selectedVideo;
@@ -171,16 +226,13 @@ export default function Dashboard() {
           const newComments = fresh.filter(c => !existingIds.has(c.id));
           if (newComments.length === 0) return prev;
           toast.success(`${newComments.length} new comment detected!`);
-          analyzeBatched(newComments.map(c => c.text), "youtube", currentVideo.id)
-            .then(resultsArr => {
-              setYtComments(all =>
-                all.map(c => {
-                  const idx = newComments.findIndex(n => n.id === c.id);
-                  if (idx !== -1 && resultsArr[idx]) return { ...c, result: resultsArr[idx] };
-                  return c;
-                })
-              );
-            });
+          analyzeBatched(newComments.map(c => c.text), "youtube", currentVideo.id).then(resultsArr => {
+            setYtComments(all => all.map(c => {
+              const idx = newComments.findIndex(n => n.id === c.id);
+              if (idx !== -1 && resultsArr[idx]) return { ...c, result: resultsArr[idx] };
+              return c;
+            }));
+          });
           return [...newComments, ...prev];
         });
       } catch { }
@@ -188,32 +240,22 @@ export default function Dashboard() {
     return () => clearInterval(interval);
   }, [selectedVideo?.id, ytConnected]);
 
-  const authHeaders = () => ({
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-  });
+  const authHeaders = () => ({ headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
 
   const ANALYZE_BATCH_SIZE = 50;
   const analyzeBatched = async (texts, platform, videoId) => {
     const results = [];
     for (let i = 0; i < texts.length; i += ANALYZE_BATCH_SIZE) {
       const chunk = texts.slice(i, i + ANALYZE_BATCH_SIZE);
-      const res = await axios.post(
-        `${API}/api/v1/comments/analyze`,
-        { comments: chunk, platform, video_id: videoId },
-        authHeaders()
-      );
+      const res = await axios.post(`${API}/api/v1/comments/analyze`, { comments: chunk, platform, video_id: videoId }, authHeaders());
       results.push(...(res.data.results || []));
     }
     return results;
   };
 
   const checkInstagramConnected = async () => {
-    try {
-      await axios.get(`${API}/api/v1/instagram/posts`, authHeaders());
-      setIgActuallyConnected(true);
-    } catch {
-      setIgActuallyConnected(false);
-    }
+    try { await axios.get(`${API}/api/v1/instagram/posts`, authHeaders()); setIgActuallyConnected(true); }
+    catch { setIgActuallyConnected(false); }
   };
 
   const handleAnalyze = async () => {
@@ -222,71 +264,45 @@ export default function Dashboard() {
     if (lines.length > 50) { toast.error("Max 50 comments at once."); return; }
     setAnalyzing(true);
     try {
-      const res = await axios.post(
-        `${API}/api/v1/comments/analyze`,
-        { comments: lines, platform: "manual" },
-        authHeaders()
-      );
+      const res = await axios.post(`${API}/api/v1/comments/analyze`, { comments: lines, platform: "manual" }, authHeaders());
       setResults(res.data.results || []);
       toast.success(`${lines.length} comment${lines.length > 1 ? "s" : ""} analyzed!`);
       fetchHistory();
-    } catch (err) {
-      toast.error(err?.response?.data?.error || "Analysis failed.");
-    } finally {
-      setAnalyzing(false);
-    }
+    } catch (err) { toast.error(err?.response?.data?.error || "Analysis failed.");
+    } finally { setAnalyzing(false); }
   };
 
   const fetchHistory = async () => {
     setLoadingHistory(true);
-    try {
-      const res = await axios.get(`${API}/api/v1/comments`, authHeaders());
-      setHistory(res.data.comments || []);
-    } catch { } finally {
-      setLoadingHistory(false);
-    }
+    try { const res = await axios.get(`${API}/api/v1/comments`, authHeaders()); setHistory(res.data.comments || []); }
+    catch { } finally { setLoadingHistory(false); }
   };
 
   const connectYouTube = async () => {
     const token = localStorage.getItem("token");
     if (!token) { toast.error("Please login first!"); return; }
-    try {
-      const res = await axios.get(`${API}/api/v1/youtube/auth_url`, { headers: { Authorization: `Bearer ${token}` } });
-      window.location.href = res.data.url;
-    } catch { toast.error("Could not initiate YouTube connection."); }
+    try { const res = await axios.get(`${API}/api/v1/youtube/auth_url`, { headers: { Authorization: `Bearer ${token}` } }); window.location.href = res.data.url; }
+    catch { toast.error("Could not initiate YouTube connection."); }
   };
 
   const disconnectYouTube = async () => {
     if (!window.confirm("Disconnect your YouTube channel?")) return;
     setDisconnectingYt(true);
-    try {
-      await axios.delete(`${API}/api/v1/youtube/disconnect`, authHeaders());
-      toast.success("YouTube disconnected.");
-      setVideos([]); setSelectedVideo(null); setYtComments([]);
-      await refreshUser();
-    } catch { toast.error("Could not disconnect YouTube.");
-    } finally { setDisconnectingYt(false); }
+    try { await axios.delete(`${API}/api/v1/youtube/disconnect`, authHeaders()); toast.success("YouTube disconnected."); setVideos([]); setSelectedVideo(null); setYtComments([]); await refreshUser(); }
+    catch { toast.error("Could not disconnect YouTube."); } finally { setDisconnectingYt(false); }
   };
 
   const fetchYouTubeVideos = async () => {
     setFetchingVideos(true);
-    try {
-      const res = await axios.get(`${API}/api/v1/youtube/videos`, authHeaders());
-      setVideos(res.data.videos || []);
-      setYtNextPageToken(res.data.next_page_token || null);
-    } catch { toast.error("Could not fetch videos.");
-    } finally { setFetchingVideos(false); }
+    try { const res = await axios.get(`${API}/api/v1/youtube/videos`, authHeaders()); setVideos(res.data.videos || []); setYtNextPageToken(res.data.next_page_token || null); }
+    catch { toast.error("Could not fetch videos."); } finally { setFetchingVideos(false); }
   };
 
   const loadMoreVideos = async () => {
     if (!ytNextPageToken || loadingMoreVideos) return;
     setLoadingMoreVideos(true);
-    try {
-      const res = await axios.get(`${API}/api/v1/youtube/videos?page_token=${ytNextPageToken}`, authHeaders());
-      setVideos(prev => [...prev, ...(res.data.videos || [])]);
-      setYtNextPageToken(res.data.next_page_token || null);
-    } catch { toast.error("Could not load more videos.");
-    } finally { setLoadingMoreVideos(false); }
+    try { const res = await axios.get(`${API}/api/v1/youtube/videos?page_token=${ytNextPageToken}`, authHeaders()); setVideos(prev => [...prev, ...(res.data.videos || [])]); setYtNextPageToken(res.data.next_page_token || null); }
+    catch { toast.error("Could not load more videos."); } finally { setLoadingMoreVideos(false); }
   };
 
   const fetchVideoComments = async (video) => {
@@ -294,11 +310,9 @@ export default function Dashboard() {
     try {
       const res = await axios.get(`${API}/api/v1/youtube/comments?video_id=${video.id}`, authHeaders());
       const fetched = res.data.comments || [];
-      setYtComments(fetched);
-      setYtCommentsNextToken(res.data.next_page_token || null);
+      setYtComments(fetched); setYtCommentsNextToken(res.data.next_page_token || null);
       if (fetched.length > 0) await autoAnalyzeYt(fetched, video);
-    } catch { toast.error("Could not fetch comments.");
-    } finally { setFetchingComments(false); }
+    } catch { toast.error("Could not fetch comments."); } finally { setFetchingComments(false); }
   };
 
   const loadMoreYtComments = async () => {
@@ -307,11 +321,9 @@ export default function Dashboard() {
     try {
       const res = await axios.get(`${API}/api/v1/youtube/comments?video_id=${selectedVideo.id}&page_token=${ytCommentsNextToken}`, authHeaders());
       const fetched = res.data.comments || [];
-      setYtComments(prev => [...prev, ...fetched]);
-      setYtCommentsNextToken(res.data.next_page_token || null);
+      setYtComments(prev => [...prev, ...fetched]); setYtCommentsNextToken(res.data.next_page_token || null);
       if (fetched.length > 0) await autoAnalyzeYt(fetched, selectedVideo, true);
-    } catch { toast.error("Could not load more comments.");
-    } finally { setLoadingMoreYtComments(false); }
+    } catch { toast.error("Could not load more comments."); } finally { setLoadingMoreYtComments(false); }
   };
 
   const autoAnalyzeYt = async (commentsToAnalyze, video, append = false) => {
@@ -319,68 +331,44 @@ export default function Dashboard() {
     try {
       const resultsArr = await analyzeBatched(commentsToAnalyze.map(c => c.text), "youtube", video?.id);
       const analyzed = commentsToAnalyze.map((c, i) => ({ ...c, result: resultsArr[i] }));
-      if (append) {
-        setYtComments(prev => { const ids = new Set(analyzed.map(c => c.id)); return prev.map(c => ids.has(c.id) ? analyzed.find(a => a.id === c.id) : c); });
-      } else { setYtComments(analyzed); }
-    } catch { toast.error("Auto-analysis failed.");
-    } finally { setAnalyzingYt(false); }
+      if (append) { setYtComments(prev => { const ids = new Set(analyzed.map(c => c.id)); return prev.map(c => ids.has(c.id) ? analyzed.find(a => a.id === c.id) : c); }); }
+      else { setYtComments(analyzed); }
+    } catch { toast.error("Auto-analysis failed."); } finally { setAnalyzingYt(false); }
   };
 
   const deleteYtComment = async (commentId) => {
-    try {
-      await axios.delete(`${API}/api/v1/youtube/comments/${commentId}`, authHeaders());
-      setYtComments(prev => prev.filter(c => c.id !== commentId));
-      toast.success("Toxic comment deleted!");
-    } catch { toast.error("Could not delete comment."); }
+    try { await axios.delete(`${API}/api/v1/youtube/comments/${commentId}`, authHeaders()); setYtComments(prev => prev.filter(c => c.id !== commentId)); toast.success("Comment deleted!"); }
+    catch { toast.error("Could not delete comment."); }
   };
 
   const connectInstagram = async () => {
     const token = localStorage.getItem("token");
     if (!token) { toast.error("Please login first!"); return; }
-    try {
-      const res = await axios.get(`${API}/api/v1/instagram/auth_url`, { headers: { Authorization: `Bearer ${token}` } });
-      window.location.href = res.data.url;
-    } catch (err) {
-      // Backend 403 bhejta hai agar Free plan user Instagram connect karne ki koshish kare
-      if (err.response?.status === 403) {
-        toast.error(err.response.data.error || "Upgrade required to connect Instagram.");
-      } else {
-        toast.error("Could not initiate Instagram connection.");
-      }
+    try { const res = await axios.get(`${API}/api/v1/instagram/auth_url`, { headers: { Authorization: `Bearer ${token}` } }); window.location.href = res.data.url; }
+    catch (err) {
+      if (err.response?.status === 403) toast.error(err.response.data.error || "Upgrade required.");
+      else toast.error("Could not initiate Instagram connection.");
     }
   };
 
   const disconnectInstagram = async () => {
     if (!window.confirm("Disconnect your Instagram account?")) return;
     setDisconnectingIg(true);
-    try {
-      await axios.delete(`${API}/api/v1/instagram/disconnect`, authHeaders());
-      toast.success("Instagram disconnected.");
-      setIgPosts([]); setSelectedPost(null); setIgComments([]); setIgActuallyConnected(false);
-      await refreshUser();
-    } catch { toast.error("Could not disconnect Instagram.");
-    } finally { setDisconnectingIg(false); }
+    try { await axios.delete(`${API}/api/v1/instagram/disconnect`, authHeaders()); toast.success("Instagram disconnected."); setIgPosts([]); setSelectedPost(null); setIgComments([]); setIgActuallyConnected(false); await refreshUser(); }
+    catch { toast.error("Could not disconnect Instagram."); } finally { setDisconnectingIg(false); }
   };
 
   const fetchInstagramPosts = async () => {
     setFetchingIgPosts(true);
-    try {
-      const res = await axios.get(`${API}/api/v1/instagram/posts`, authHeaders());
-      setIgPosts(res.data.posts || []);
-      setIgNextCursor(res.data.next_cursor || null);
-    } catch { toast.error("Could not fetch Instagram posts.");
-    } finally { setFetchingIgPosts(false); }
+    try { const res = await axios.get(`${API}/api/v1/instagram/posts`, authHeaders()); setIgPosts(res.data.posts || []); setIgNextCursor(res.data.next_cursor || null); }
+    catch { toast.error("Could not fetch Instagram posts."); } finally { setFetchingIgPosts(false); }
   };
 
   const loadMorePosts = async () => {
     if (!igNextCursor || loadingMorePosts) return;
     setLoadingMorePosts(true);
-    try {
-      const res = await axios.get(`${API}/api/v1/instagram/posts?after=${igNextCursor}`, authHeaders());
-      setIgPosts(prev => [...prev, ...(res.data.posts || [])]);
-      setIgNextCursor(res.data.next_cursor || null);
-    } catch { toast.error("Could not load more posts.");
-    } finally { setLoadingMorePosts(false); }
+    try { const res = await axios.get(`${API}/api/v1/instagram/posts?after=${igNextCursor}`, authHeaders()); setIgPosts(prev => [...prev, ...(res.data.posts || [])]); setIgNextCursor(res.data.next_cursor || null); }
+    catch { toast.error("Could not load more posts."); } finally { setLoadingMorePosts(false); }
   };
 
   const fetchPostComments = async (post) => {
@@ -388,11 +376,9 @@ export default function Dashboard() {
     try {
       const res = await axios.get(`${API}/api/v1/instagram/comments?media_id=${post.id}`, authHeaders());
       const fetched = res.data.comments || [];
-      setIgComments(fetched);
-      setIgCommentsNextCursor(res.data.next_cursor || null);
+      setIgComments(fetched); setIgCommentsNextCursor(res.data.next_cursor || null);
       if (fetched.length > 0) await autoAnalyzeIg(fetched, post);
-    } catch { toast.error("Could not fetch comments.");
-    } finally { setFetchingIgComments(false); }
+    } catch { toast.error("Could not fetch comments."); } finally { setFetchingIgComments(false); }
   };
 
   const loadMoreIgComments = async () => {
@@ -401,11 +387,9 @@ export default function Dashboard() {
     try {
       const res = await axios.get(`${API}/api/v1/instagram/comments?media_id=${selectedPost.id}&after=${igCommentsNextCursor}`, authHeaders());
       const fetched = res.data.comments || [];
-      setIgComments(prev => [...prev, ...fetched]);
-      setIgCommentsNextCursor(res.data.next_cursor || null);
+      setIgComments(prev => [...prev, ...fetched]); setIgCommentsNextCursor(res.data.next_cursor || null);
       if (fetched.length > 0) await autoAnalyzeIg(fetched, selectedPost, true);
-    } catch { toast.error("Could not load more comments.");
-    } finally { setLoadingMoreIgComments(false); }
+    } catch { toast.error("Could not load more comments."); } finally { setLoadingMoreIgComments(false); }
   };
 
   const autoAnalyzeIg = async (commentsToAnalyze, post, append = false) => {
@@ -413,19 +397,14 @@ export default function Dashboard() {
     try {
       const resultsArr = await analyzeBatched(commentsToAnalyze.map(c => c.text), "instagram", post?.id);
       const analyzed = commentsToAnalyze.map((c, i) => ({ ...c, result: resultsArr[i] }));
-      if (append) {
-        setIgComments(prev => { const ids = new Set(analyzed.map(c => c.id)); return prev.map(c => ids.has(c.id) ? analyzed.find(a => a.id === c.id) : c); });
-      } else { setIgComments(analyzed); }
-    } catch { toast.error("Auto-analysis failed.");
-    } finally { setAnalyzingIg(false); }
+      if (append) { setIgComments(prev => { const ids = new Set(analyzed.map(c => c.id)); return prev.map(c => ids.has(c.id) ? analyzed.find(a => a.id === c.id) : c); }); }
+      else { setIgComments(analyzed); }
+    } catch { toast.error("Auto-analysis failed."); } finally { setAnalyzingIg(false); }
   };
 
   const deleteIgComment = async (commentId) => {
-    try {
-      await axios.delete(`${API}/api/v1/instagram/comments/${commentId}`, authHeaders());
-      setIgComments(prev => prev.filter(c => c.id !== commentId));
-      toast.success("Toxic comment deleted!");
-    } catch { toast.error("Could not delete comment."); }
+    try { await axios.delete(`${API}/api/v1/instagram/comments/${commentId}`, authHeaders()); setIgComments(prev => prev.filter(c => c.id !== commentId)); toast.success("Comment deleted!"); }
+    catch { toast.error("Could not delete comment."); }
   };
 
   const exportCSV = (data) => {
@@ -438,8 +417,8 @@ export default function Dashboard() {
       r.language || r.result?.language || ""
     ]));
     const blob = new Blob([rows.map(r => r.join(",")).join("\n")], { type: "text/csv" });
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
     a.href = url; a.download = "modera-results.csv"; a.click();
   };
 
@@ -453,7 +432,7 @@ export default function Dashboard() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("sl_active_tab"); // Logout pe tab reset
+    localStorage.removeItem("sl_active_tab");
     logout();
     navigate("/");
   };
@@ -468,34 +447,28 @@ export default function Dashboard() {
             <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
             Manual Analyze
           </button>
-
           <button className={`sl-sidenav-item ${activeTab === "youtube" ? "active" : ""}`} onClick={() => switchTab("youtube")}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
             YouTube
             {ytConnected && <span className="sl-connected-dot" />}
           </button>
-
           <button className={`sl-sidenav-item ${activeTab === "instagram" ? "active" : ""}`} onClick={() => switchTab("instagram")}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
             Instagram
             {igActuallyConnected && <span className="sl-connected-dot" />}
           </button>
-
           <button className={`sl-sidenav-item ${activeTab === "history" ? "active" : ""}`} onClick={() => { switchTab("history"); fetchHistory(); }}>
             <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
             History
           </button>
-
           <button className={`sl-sidenav-item ${activeTab === "telegram" ? "active" : ""}`} onClick={() => switchTab("telegram")}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
             Connect Telegram
           </button>
-
           <button className={`sl-sidenav-item ${activeTab === "billing" ? "active" : ""}`} onClick={() => switchTab("billing")}>
             <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
             Billing
           </button>
-
           <button className={`sl-sidenav-item ${activeTab === "flagged" ? "active" : ""}`} onClick={() => switchTab("flagged")}>
             <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" /></svg>
             Flagged Words
@@ -525,17 +498,17 @@ export default function Dashboard() {
       </aside>
 
       <main className="sl-dash-main">
+        <DashboardHeader user={user} activeTab={activeTab} />
 
         {/* ════════ MANUAL TAB ════════ */}
         {activeTab === "manual" && (
           <div className="sl-dash-content">
-            <div className="sl-dash-header">
-              <h1 className="sl-dash-title">Manual Analysis</h1>
-              <p className="sl-dash-sub">Paste comments below — one per line — and let AI classify them.</p>
-            </div>
+            <TabHeader title="Manual Analysis" sub="Paste comments below — one per line — and let AI classify them." />
             <div className="sl-feature-card sl-analyze-card">
               <label className="sl-label">Paste Comments (max 50, one per line)</label>
-              <textarea className="sl-textarea" rows={8} placeholder={"bhai teri video bakwaas hai\nGreat content keep it up!\nSubscribe karo mere channel ko link bio mein"} value={comments} onChange={e => setComments(e.target.value)} />
+              <textarea className="sl-textarea" rows={8}
+                placeholder={"bhai teri video bakwaas hai\nGreat content keep it up!\nSubscribe karo mere channel ko link bio mein"}
+                value={comments} onChange={e => setComments(e.target.value)} />
               <div className="sl-analyze-footer">
                 <span className="sl-comment-count">{comments.split("\n").filter(l => l.trim()).length} / 50 comments</span>
                 <button className="sl-btn-primary" onClick={handleAnalyze} disabled={analyzing}>
@@ -569,10 +542,7 @@ export default function Dashboard() {
         {/* ════════ YOUTUBE TAB ════════ */}
         {activeTab === "youtube" && (
           <div className="sl-dash-content">
-            <div className="sl-dash-header">
-              <h1 className="sl-dash-title">YouTube</h1>
-              <p className="sl-dash-sub">Connect your channel — AI will analyze comments automatically.</p>
-            </div>
+            <TabHeader title="YouTube" sub="Connect your channel — AI will analyze comments automatically." />
             {!ytConnected ? (
               <div className="sl-feature-card sl-yt-connect-card">
                 <div className="sl-yt-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></div>
@@ -638,19 +608,13 @@ export default function Dashboard() {
         {/* ════════ INSTAGRAM TAB ════════ */}
         {activeTab === "instagram" && (
           <div className="sl-dash-content">
-            <div className="sl-dash-header">
-              <h1 className="sl-dash-title">Instagram</h1>
-              <p className="sl-dash-sub">Connect your account — AI will analyze comments automatically.</p>
-            </div>
+            <TabHeader title="Instagram" sub="Connect your account — AI will analyze comments automatically." />
             {!igActuallyConnected ? (
               user?.plan === "free" ? (
                 <div className="sl-feature-card sl-yt-connect-card">
                   <h3 className="sl-yt-connect-title">Instagram — Starter Plan Required</h3>
-                  <p className="sl-yt-connect-desc">
-                    Upgrade to Starter (₹299/month) to connect Instagram and unlock
-                    AI-powered comment moderation for your posts.
-                  </p>
-                  <ul className="sl-yt-perks"><li>✓ 1500 comments/month</li><li>✓ YouTube + Instagram</li><li>✓ Auto-delete toxic comments</li></ul>
+                  <p className="sl-yt-connect-desc">Upgrade to Starter (₹299/month) to connect Instagram and unlock AI-powered comment moderation.</p>
+                  <ul className="sl-yt-perks"><li>✓ 1,500 comments/month</li><li>✓ YouTube + Instagram</li><li>✓ Auto-delete toxic comments</li></ul>
                   <button className="sl-btn-primary sl-yt-connect-btn" onClick={() => switchTab("billing")}>Upgrade to Starter →</button>
                 </div>
               ) : (
@@ -716,10 +680,7 @@ export default function Dashboard() {
         {/* ════════ HISTORY TAB ════════ */}
         {activeTab === "history" && (
           <div className="sl-dash-content">
-            <div className="sl-dash-header">
-              <h1 className="sl-dash-title">Analysis History</h1>
-              <p className="sl-dash-sub">All your past analyses in one place.</p>
-            </div>
+            <TabHeader title="Analysis History" sub="All your past analyses in one place." />
             {loadingHistory ? <div className="sl-loading">Loading history...</div> : history.length === 0 ? (
               <div className="sl-empty"><div className="sl-empty-icon">📭</div><div className="sl-empty-text">No analyses yet.</div></div>
             ) : (
@@ -742,24 +703,22 @@ export default function Dashboard() {
         {/* ════════ TELEGRAM TAB ════════ */}
         {activeTab === "telegram" && (
           <div className="sl-dash-content">
-            <div className="sl-dash-header">
-              <h1 className="sl-dash-title">Connect Telegram</h1>
-              <p className="sl-dash-sub">Link your account to get toxic comment alerts on Telegram.</p>
-            </div>
+            <TabHeader title="Connect Telegram" sub="Link your account to get toxic comment alerts on Telegram." />
             {["pro", "agency"].includes(user?.plan) ? (
               <div className="sl-feature-card sl-yt-connect-card">
                 <h3 className="sl-yt-connect-title">Link Your Telegram Account</h3>
                 <p className="sl-yt-connect-desc">Get instant Telegram alerts whenever a toxic comment is detected.</p>
-                <ul className="sl-yt-perks"><li>1. Open <strong>@ModeraAIBot</strong> on Telegram</li><li>2. Click the button below to copy your connect command</li><li>3. Paste it in the bot chat and send</li></ul>
+                <ul className="sl-yt-perks">
+                  <li>1. Open <strong>@ModeraAIBot</strong> on Telegram</li>
+                  <li>2. Click the button below to copy your connect command</li>
+                  <li>3. Paste it in the bot chat and send</li>
+                </ul>
                 <button className="sl-btn-primary sl-yt-connect-btn" onClick={copyTelegramToken}>Copy Connect Command</button>
               </div>
             ) : (
               <div className="sl-feature-card sl-yt-connect-card">
                 <h3 className="sl-yt-connect-title">Telegram — Pro Plan Required</h3>
-                <p className="sl-yt-connect-desc">
-                  Telegram alerts are available on Pro plan (₹799/month) and above.
-                  Upgrade to get instant toxic comment notifications.
-                </p>
+                <p className="sl-yt-connect-desc">Telegram alerts are available on Pro plan (₹799/month) and above. Upgrade to get instant toxic comment notifications.</p>
                 <button className="sl-btn-primary sl-yt-connect-btn" onClick={() => switchTab("billing")}>Upgrade to Pro →</button>
               </div>
             )}
