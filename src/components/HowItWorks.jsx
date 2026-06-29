@@ -6,7 +6,7 @@ export default function HowItWorks() {
     <section className="sl-how" id="how">
       <div className="sl-reveal text-center">
         <div className="sl-section-label">Process</div>
-        <div className="sl-section-title sl-syne">How Siftly Works</div>
+        <div className="sl-section-title sl-syne">How ModeraAI Works</div>
       </div>
       <div className="row g-4 mt-4 sl-reveal position-relative">
         <div className="sl-steps-line d-none d-md-block" />

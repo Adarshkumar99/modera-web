@@ -4,7 +4,7 @@ export const FEATURES = [
   { icon: "🎯", color: "sl-fi-purple", title: "Smart Categories",        desc: "5 precise labels — Safe, Toxic, Spam, Hate, Warning — with confidence scores and suggested actions." },
   { icon: "📊", color: "sl-fi-orange", title: "Analytics Dashboard",     desc: "Track comment trends, toxic spikes, peak hours, and audience sentiment over time." },
   { icon: "🔗", color: "sl-fi-pink",   title: "Multi-Platform",          desc: "Connect YouTube, Instagram, and Telegram in one dashboard. One tool, all platforms." },
-  { icon: "🛡️", color: "sl-fi-teal",  title: "Auto-Actions",            desc: "Set rules once — Siftly auto-deletes, hides, or flags comments based on your preferences." },
+  { icon: "🛡️", color: "sl-fi-teal",  title: "Auto-Actions",            desc: "Set rules once — ModeraAI auto-deletes, hides, or flags comments based on your preferences." },
 ];
 
 export const PLATFORMS = [
